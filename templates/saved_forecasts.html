@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="table-container">
+        <table border="1">
+            <tr>
+
+                <th>Город</th>
+                <th>Температура</th>
+                <th>Ветер</th>
+                <th>Облачность</th>
+                <th>Дата запроса</th>
+            </tr>
+            {% for forecast in forecasts %}
+            <tr>
+                <td>{{ forecast[0] }}</td>
+                <td>{{ forecast[1] }}</td>
+                <td>{{ forecast[2] }}</td>
+                <td>{{ forecast[3] }}</td>
+                <td>{{ forecast[4] }}</td>
+
+            </tr>
+            {% endfor %}
+        </table>
+   </div>
+    <br>
+    <a href="/"><button>Back to Home</button></a>
+</body>
+</html>

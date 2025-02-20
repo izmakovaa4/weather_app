@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <img src="{{ url_for('static', filename='sun-cloud.png') }}" class="image">
+
+    <form action="/weather" method="post">
+        <div class="rounded-rectangle">
+            <input type="text" name="city" placeholder="Введите название города" required>
+        </div>
+
+        <div class="button-container">
+            <button class="submit-button">Подтвердить</button>
+        </div>
+
+        <div class="button-container">
+            <a href="{{ url_for('history') }}" class="history-button">История запросов</a>
+        </div>
+    </form>
+
+    <div class="icon-container">
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='city.png') }}" class="icons">
+            <p>{{ city }}</p>
+        </div>
+
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='temp.png') }}" class="icons">
+            <p>{{ temperature }}°C</p>
+        </div>
+
+        <div class="weather-item">
+             {% if cloud is not none and cloud < 50 %}
+                    <img src="{{ url_for('static', filename='sun.png') }}" class="icons">
+             {% else %}
+                    <img src="{{ url_for('static', filename='cloud.png') }}" class="icons">
+             {% endif %}
+                <p>{{ cloud }}%</p>
+        </div>
+
+<!--        <div class="weather-item">-->
+<!--            <img src="{{ url_for('static', filename='cloud.png') }}" class="icons">-->
+<!--            <p>{{ cloud }}</p>-->
+<!--        </div>-->
+
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='wind.png') }}" class="icons">
+            <p>{{ wind }} км/ч</p>
+        </div>
+
+        <div class="weather-item" id="minus15-icon" style="display:none">
+            <img src="{{ url_for('static', filename='minus15.png') }}" class="icons">
+            <p>Мин. -15°C</p>
+        </div>
+
+<!--        <div class="weather-item" id="condition-icon">-->
+<!--            {% if condition == 'Sunny' %}-->
+<!--                <img src="{{ url_for('static', filename='sun.png') }}" class="icons">-->
+<!--            {% elif condition == 'Cloudy' %}-->
+<!--                <img src="{{ url_for('static', filename='cloud.png') }}" class="icons">-->
+<!--            {% endif %}-->
+<!--            <p>{{ condition }}</p>-->
+<!--        </div>-->
+    </div>
+
+    <script>
+        const temperature = {{ temperature | tojson | default('null') }};
+<!--        const cloud = {{ cloud | tojson | default('null') }};-->
+
+        if (temperature === -15) {
+            document.getElementById('minus15-icon').style.display = 'block';
+        } else {
+            document.getElementById('minus15-icon').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

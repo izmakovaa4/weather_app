@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <img src="{{ url_for('static', filename='sun-cloud.png') }}" class="image">
+
+    <form action="/weather" method="post">
+        <div class="rounded-rectangle">
+            <input type="text" name="city" placeholder="Введите название города" required>
+        </div>
+        <div class="button-container">
+            <button class="submit-button">Подтвердить</button>
+        </div>
+    </form>
+
+    <div class="button-container">
+        <a href="{{ url_for('history') }}" class="history-button">История запросов</a>
+    </div>
+
+    <div class="icon-container">
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='city.png') }}" class="icons">
+            <p>{{ city }}</p>
+        </div>
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='temp.png') }}" class="icons">
+            <p>{{ temperature }}°C</p>
+        </div>
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='sun.png') }}" class="icons">
+            <p>{{ sun }}%</p>
+        </div>
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='cloud.png') }}" class="icons">
+            <p>{{ cloud }}%</p>
+        </div>
+
+        <div class="weather-item">
+            <img src="{{ url_for('static', filename='wind.png') }}" class="icons">
+            <p>{{ wind }} км/ч </p>
+        </div>
+        <div class="weather-item" id="minus15-icon" style="display:none">
+            <img src="{{ url_for('static', filename='minus15.png') }}" class="icons">
+            <p>Мин. -15°C</p>
+        </div>
+
+    </div>
+
+    <div class="current-time">
+        <p>Текущее время: {{ current_time }}</p>
+    </div>
+
+    <script>
+
+        const temperature = {{ temperature | default('null') | tojson  }};
+<!--        const cloud = {{ cloud | default('null') | tojson }};-->
+
+        if (temperature === -15) {
+            document.getElementById('minus15-icon').style.display = 'block';
+        } else {
+            document.getElementById('minus15-icon').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

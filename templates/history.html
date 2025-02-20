@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>История запросов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <img src="{{ url_for('static', filename='sun-cloud.png') }}" class="image">
+    <div class="table-container">
+        <table >
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Температура</th>
+                    <th>Ветер</th>
+                    <th>Облачность</th>
+                    <th>Дата запроса</th>
+                </tr>
+            </thead>
+            <tbody id="history-body" class="styled-body">
+                {% if history %}
+                    {% for entry in history %}
+                    <tr>
+                        <td>{{ entry[0] }}</td>
+                        <td>{{ entry[1] }}°C</td>
+                        <td>{{ entry[2] }} км/ч</td>
+                        <td>{{ entry[3] }}%</td>
+                        <td>{{ entry[4] }}</td>
+
+
+                        <td>
+                                {% if entry[3] < 50 %}
+                                    <img src="{{ url_for('static', filename='sun.png') }}" class="icons">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='cloud.png') }}" class="icons">
+                                {% endif %}
+                        </td>
+
+                        <td>
+                            #recent
+                                <form action="{{ url_for('add_forecast_route') }}" method="post">
+                                <input type="hidden" name="city" value="{{ entry[0] }}">
+                                <input type="hidden" name="city" value="{{ entry[0] }}">
+                                <input type="hidden" name="city" value="{{ entry[1] }}">
+                                <input type="hidden" name="temperature" value="{{ entry[2] }}">
+                                <input type="hidden" name="wind" value="{{ entry[3] }}">
+                                <input type="hidden" name="cloud" value="{{ entry[4] }}">
+                                <input type="hidden" name="date_time" value="{{ entry[5] }}">
+                                <button type="submit">
+                                    <img src="{{ url_for('static', filename='save-icon.png') }}" alt="Save" class="icons">
+                                </button>
+                            </form>
+                            #recent
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                {% else %}
+                    {% for _ in range(5) %}
+                    <tr>
+                        <td colspan="5" class="empty-message">История пуста</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clearHistory_container">
+        <button class="clearHistory_button" onclick="clearHistory()">Очистить историю</button>
+
+    <form action="{{ url_for('saved_forecasts') }}" method="GET">
+        <button class="clearHistory_button" type="submit">Избранные</button>
+    </form>
+    </div>
+<script>
+
+
+        function clearHistory() {
+            fetch('/clear_history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tbody = document.getElementById('history-body');
+                    tbody.innerHTML = '';
+                    for (let i = 0; i < 5; i++) {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.colSpan = 6;
+                        cell.className = 'empty-message';
+                        cell.textContent = 'История пуста';
+                        row.appendChild(cell);
+                        tbody.appendChild(row);
+                    }
+                }
+            })
+            .catch(error => console.error('Ошибка при очистке истории:', error));
+        }
+    </script>
+</body>
+</html>
+
